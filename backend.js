@@ -52,12 +52,17 @@ app.use(express.json());
 app.get('/users', (req, res) => {
     const name = req.query.name;
     if (name != undefined){
+        let result = findUserByNameandJob(name);
+        result = {users_list: result};
+        res.send(result);
+    }
+    else if (name != undefined) {
         let result = findUserByName(name);
         result = {users_list: result};
         res.send(result);
     }
-    else{
-        res.send(users);
+    else {
+        res.send(result);
     }
 });
 
@@ -81,6 +86,10 @@ const findUserByName = (name) => {
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
 
+const findUserByNameandJob = (name, job) => {
+    return users['users_list'].filter((user) => user['name'] === name && user['job'] === job);
+}
+
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     addUser(userToAdd);
@@ -89,6 +98,21 @@ app.post('/users', (req, res) => {
 
 function addUser(user){
     users['users_list'].push(user);
+}
+
+app.delete('/users/:id', (req, res) => {
+    const id = req.params['id'];
+    let result = deleteUser(id);
+    if (result === -1)
+        res.status(404).send('Resource not found.');
+    res.status(200);
+});
+
+function deleteUser(id){
+    const indexToDelete = users['users_list'].findIndex((user) => user['id'] === id);
+    if (indexToDelete !== -1)
+        users['users_list'].splice(indexToDelete, 1);
+    return indexToDelete;
 }
 
 app.listen(port, () => {
