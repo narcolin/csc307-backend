@@ -30,7 +30,12 @@ const users = {
           id: 'zap555', 
           name: 'Dennis',
           job: 'Bartender',
-       }
+       },
+       {
+        "id": "qwe123",
+        "job": "Zookeeper",
+        "name": "Cindy"
+     }
     ]
  }
 
@@ -74,6 +79,16 @@ function findUserById(id) {
 
 const findUserByName = (name) => { 
     return users['users_list'].filter( (user) => user['name'] === name); 
+}
+
+app.post('/users', (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.status(200).end();
+});
+
+function addUser(user){
+    users['users_list'].push(user);
 }
 
 app.listen(port, () => {
