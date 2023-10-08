@@ -49,7 +49,7 @@ app.get('/users', (req, res) => {
         res.send(result);
     }
     else {
-        res.send(result);
+        res.send(users);
     }
 });
 
