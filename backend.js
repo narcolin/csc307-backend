@@ -74,32 +74,24 @@ const findUserByName = (name) => {
 }
 
 app.post('/users', (req, res) => {
-    const record = req.body;
-    idgen['id'] = idGenerator();
-    length = addUser(idgen);
-    if (length === undefined)
-        res.status(204).end();
-    else
-        res.status(201).send(idgen);
+    const addingUser = req.body;
+    addingUser['id'] = generateID();
+    addUser(addingUser);
+    res.status(201).send(addingUser).end();
 });
 
 function addUser(user){
-    return users['users_list'].push(user);
+    users['users_list'].push(user);
 }
 
-function idGenerator(){
-    var random_ID = "";
-    var random_char = '';
-    for (var i=0; i<6; i++){
-        if (i < 3){ 
-            random_char = Math.floor(Math.random() * (26) + 97);
-            random_ID += String.fromCharCode(random_char); 
-        } else {
-            random_char = Math.floor(Math.random() * (10) + 48);
-            random_ID += String.fromCharCode(random_char); 
-        }
+function generateID(){
+    var id = "";
+    var alph = "abcdefghijklmnopqrstuvwxyz0123456789";
+    var alphlength = alph.length;
+    for (var i = 0; i < 6; i++){
+        id += alph.charAt(Math.floor(Math.random() * alphlength));
     }
-    return random_ID;
+    return id;
 }
 
 app.delete('/users/:id', (req, res) => {
