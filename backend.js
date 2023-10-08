@@ -32,22 +32,23 @@ const users = {
           job: 'Bartender',
        },
        {
-        "id": "qwe123",
-        "job": "Zookeeper",
-        "name": "Cindy"
+          id: "qwe123",
+          job: "Zookeeper",
+          name: "Cindy"
      }
     ]
  }
 
+import cors from 'cors';
 app.use(express.json());
 
-// app.get('/', (req, res) => {
-//     res.send('Hello World!');
-// });
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
 
-// app.get('/users', (req, res) => {
-//     res.send(users);
-// });
+app.get('/users', (req, res) => {
+    res.send(users);
+});
 
 app.get('/users', (req, res) => {
     const name = req.query.name;
