@@ -1,7 +1,10 @@
 import express from "express";
-
+import cors from "cors";
 const app = express();
 const port = 8000;
+
+app.use(cors());
+app.use(express.json());
 
 const users = { 
     users_list :
@@ -30,34 +33,17 @@ const users = {
           id: 'zap555', 
           name: 'Dennis',
           job: 'Bartender',
-       },
-       {
-          id: "qwe123",
-          job: "Zookeeper",
-          name: "Cindy"
-     }
+       }
     ]
  }
-
-import cors from 'cors';
-app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
 app.get('/users', (req, res) => {
-    res.send(users);
-});
-
-app.get('/users', (req, res) => {
     const name = req.query.name;
     if (name != undefined){
-        let result = findUserByNameandJob(name);
-        result = {users_list: result};
-        res.send(result);
-    }
-    else if (name != undefined) {
         let result = findUserByName(name);
         result = {users_list: result};
         res.send(result);
@@ -87,35 +73,60 @@ const findUserByName = (name) => {
     return users['users_list'].filter( (user) => user['name'] === name); 
 }
 
-const findUserByNameandJob = (name, job) => {
-    return users['users_list'].filter((user) => user['name'] === name && user['job'] === job);
-}
-
 app.post('/users', (req, res) => {
-    const userToAdd = req.body;
-    addUser(userToAdd);
-    res.status(200).end();
+    const record = req.body;
+    idgen['id'] = idGenerator();
+    length = addUser(idgen);
+    if (length === undefined)
+        res.status(204).end();
+    else
+        res.status(201).send(idgen);
 });
 
 function addUser(user){
-    users['users_list'].push(user);
+    return users['users_list'].push(user);
+}
+
+function idGenerator(){
+    var random_ID = "";
+    var random_char = '';
+    for (var i=0; i<6; i++){
+        if (i < 3){ 
+            random_char = Math.floor(Math.random() * (26) + 97);
+            random_ID += String.fromCharCode(random_char); 
+        } else {
+            random_char = Math.floor(Math.random() * (10) + 48);
+            random_ID += String.fromCharCode(random_char); 
+        }
+    }
+    return random_ID;
 }
 
 app.delete('/users/:id', (req, res) => {
-    const id = req.params['id'];
-    let result = deleteUser(id);
-    if (result === -1)
-        res.status(404).send('Resource not found.');
-    res.status(200);
+    const id = req.params['id']
+    const userToDelete = findUserById(id)
+    if (userToDelete === undefined) {
+        res.status(404).send('Resource Not Found');
+    }
+    else {
+        deleteUser(userToDelete);
+        res.status(204).end();
+    }
 });
 
-function deleteUser(id){
-    const indexToDelete = users['users_list'].findIndex((user) => user['id'] === id);
-    if (indexToDelete !== -1)
-        users['users_list'].splice(indexToDelete, 1);
-    return indexToDelete;
+function deleteUser(user){
+    const index = users['users_list'].indexOf(user)
+    if(index < 0 || index > users['users_list'].length)
+        res.status(200).end();
+    else
+        users['users_list'].splice(index, 1);
 }
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
+
+// const findUserByNameandJob = (name, job) => {
+//     return users['users_list'].filter((user) => user['name'] === name && user['job'] === job);
+// }
