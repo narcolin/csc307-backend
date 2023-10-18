@@ -1,3 +1,5 @@
+// database access on the backend assign
+
 import mongoose from "mongoose";
 import userModel from "./user.js";
 

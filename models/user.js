@@ -1,3 +1,5 @@
+// database access on the backend assign
+
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
